@@ -64,7 +64,7 @@ $(document).ready(function() {
 
     // Instead of generating a new element, bind to the existing skeleton of
     // the App already present in the HTML.
-    el: $("#hecklerapp"),
+    el: $("#filtrandapp"),
 
     // At initialization we bind to the relevant events on the Tweets
     // collection, when items are added or changed. Kick things off by

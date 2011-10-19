@@ -9,19 +9,19 @@ html(lang="en")
 
     link(rel='stylesheet', href='main.css')
 
-    title Heckler
+    title= appTitle
 
   body
 
     .title
-      h1 Heckler
+      h1= appTitle
 
     form(class="subject-form", action="/")
       label Subject
       input(name="subject", value="#{subject}")
 
 
-    #hecklerapp
+    #filtrandapp
 
       .content
         #tweets
