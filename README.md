@@ -1,7 +1,6 @@
 ### Filtrand
 
-A twitter subject streamer
-A demo of Pusher's new web hook feature.
+A twitter subject streamer.  A demo of Pusher's new web hook feature.
 
 --------
 
