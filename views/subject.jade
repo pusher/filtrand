@@ -1,0 +1,34 @@
+html(lang="en")
+  head
+
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js")
+    script(src="underscore-min.js")
+    script(src="backbone-min.js")
+    script(src="http://js.pusherapp.com/1.9/pusher.min.js")
+    script(src="client.js")
+
+    link(rel='stylesheet', href='main.css')
+
+    title Heckler
+
+  body
+
+    .title
+      h1 Heckler
+
+    form(class="subject-form", action="/")
+      label Subject
+      input(name="subject", value="#{subject}")
+
+
+    #hecklerapp
+
+      .content
+        #tweets
+          ul#tweet-list
+
+      <script type="text/template" id="item-template">
+      <div class="display"><div class="tweet-text">
+      <%= this.model.text %>
+      </div></div>
+      </script>
