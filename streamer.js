@@ -73,7 +73,8 @@ var currentKeywords = function() {
 };
 
 var tweetEmitter = function(tweet) {
-  console.log("emit:" + tweet.text)
+  console.log("emit:")
+  console.log(tweet.text)
   var channels = currentKeywords();
   for(var i in channels) {
     var channel = channels[i];
@@ -98,6 +99,7 @@ var setup = function(keywords) {
   });
   console.log("v")
   twit.addListener('error', function(error) {
+    console.log("twit error")
     console.log(error.message);
   });
   console.log("w")
