@@ -4,6 +4,9 @@ $(document).ready(function() {
   //Pusher.host = "localhost";
   //Pusher.ws_port = 8090;
 
+  // staging
+  Pusher.host = "ws.pusherapp.com"
+
   // tweet model
   window.Tweet = Backbone.Model.extend({
     url: "/",
@@ -112,7 +115,7 @@ $(document).ready(function() {
   channel.bind('tweet', function(tweetText) {
     var tweet = new Tweet();
     tweet.text = tweetText;
-    console.log(window.Tweets.length)
+
     if(window.Tweets.length == window.maxTweets)
       window.Tweets.last().destroy();
 

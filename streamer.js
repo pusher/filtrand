@@ -5,6 +5,10 @@ var Pusher = require('node-pusher');
 //Pusher.prototype.domain = 'localhost';
 //Pusher.prototype.port = 8081;
 
+// staging
+Pusher.prototype.domain = 'api.staging.pusherapp.com';
+
+
 
 // API
 
