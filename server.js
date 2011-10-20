@@ -54,11 +54,13 @@ app.post("/subject_interest_hook", function (req, res) {
   var event = body.data.event;
 
   console.log(channel, event)
-
+  console.log("a")
   // we could authenticate the web hook here
 
   if(event == OCCUPIED_EVENT) {
+    console.log("b")
     streamer.track(channel);
+    console.log("c")
   } else if(event == VACATED_EVENT) {
     streamer.untrack(channel);
   }
