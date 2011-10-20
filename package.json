@@ -4,7 +4,6 @@
   "dependencies": {
     "express": "2.4.7",
     "jade": "0.16.2",
-    "node-pusher": "0.0.1",
-    "twitter-node": "0.0.2"
+    "node-pusher": "0.0.1"
   }
 }
