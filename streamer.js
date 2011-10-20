@@ -73,6 +73,7 @@ var currentKeywords = function() {
 };
 
 var tweetEmitter = function(tweet) {
+  console.log("emit:" + tweet.text)
   var channels = currentKeywords();
   for(var i in channels) {
     var channel = channels[i];

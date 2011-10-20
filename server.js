@@ -64,7 +64,7 @@ app.post("/subject_interest_hook", function (req, res) {
   } else if(event == VACATED_EVENT) {
     streamer.untrack(channel);
   }
-
+  console.log("d")
   res.send("{response: OK}");
 });
 
