@@ -52,6 +52,7 @@ app.post("/subject_interest_hook", function (req, res) {
   var body = req.body;
   var channel = body.data.channel;
   var event = body.data.event;
+  console.log(body, channel, event)
 
   console.log(channel, event)
   console.log("a")
