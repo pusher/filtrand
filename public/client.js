@@ -5,7 +5,7 @@ $(document).ready(function() {
   //Pusher.ws_port = 8090;
 
   // staging
-  Pusher.host = "ws.staging.pusherapp.com"
+  // Pusher.host = "ws.staging.pusherapp.com"
 
   // tweet model
   window.Tweet = Backbone.Model.extend({
