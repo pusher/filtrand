@@ -69,4 +69,6 @@ app.post("/subject_interest_hook", function (req, res) {
 
 // run server
 
-app.listen(process.env.PORT || 5000);
+var port = 5000
+app.listen(process.env.PORT || port);
+console.log("Listening for WebHooks on port " + port + " at " + "/subject_interest_hook")
