@@ -110,7 +110,6 @@ $(document).ready(function() {
   // Flash fallback logging - don't include this in production
   WEB_SOCKET_DEBUG = true;
 
-  var pusher = new Pusher('6f8a6a07383837624d21'); // Replace with your app key
   var channel = pusher.subscribe(getSubject());
 
   // global collection of tweets

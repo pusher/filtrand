@@ -22,6 +22,7 @@ app.get("/:subject", function (req, res) {
   var subject = req.params["subject"];
   res.render ('subject.jade', {
     subject: subject,
+    key: process.env.PUSHER_KEY,
     layout: false,
     appTitle: appTitle
   });

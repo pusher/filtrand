@@ -5,6 +5,11 @@ html(lang="en")
     script(src="underscore-min.js")
     script(src="backbone-min.js")
     script(src="http://js.pusherapp.com/1.9/pusher.min.js")
+
+    <script type="text/javascript">
+    | var pusher = new Pusher("#{key}"); // Replace with your app key
+    </script>
+
     script(src="client.js")
 
     link(rel='stylesheet', href='main.css')
