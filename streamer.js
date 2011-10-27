@@ -1,5 +1,5 @@
 var sys = require('sys');
-var TwitterNode = require('twitter-node').TwitterNode;
+var TwitterNode = require('./vendor/twitter-node').TwitterNode;
 var Pusher = require('node-pusher');
 
 // uncomment for local
