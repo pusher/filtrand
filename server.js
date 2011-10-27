@@ -46,8 +46,8 @@ app.get("/", function (req, res) {
 });
 
 // receive a web hook indicating subject channel occupied or vacated
-var OCCUPIED_EVENT = "occupied";
-var VACATED_EVENT = "vacated";
+var OCCUPIED_EVENT = "channel_occupied";
+var VACATED_EVENT = "channel_vacated";
 app.post("/subject_interest_hook", function (req, res) {
   var body = req.body;
   var channel = body.data.channel;
