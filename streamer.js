@@ -37,16 +37,12 @@ streamer.untrack = function(keyword) {
 
 // setup the streamer with a Pusher connection
 streamer.appSetup = function(key, secret, appId) {
-  try {
-    pusher = new Pusher({
-      appId: appId,
-      key: key,
-      secret: secret
-    });
-  }
-  catch(e) {
-    console.log("Error establishing connection to Pusher.")
-  }
+    // pusher = new Pusher({
+    //   appId: appId,
+    //   key: key,
+    //   secret: secret
+    // });
+
 };
 
 streamer.twitterSetup = function(username, password) {
@@ -82,41 +78,33 @@ var tweetEmitter = function(tweet) {
   for(var i in channels) {
     var channel = channels[i];
     if(tweet.text.indexOf(channel) != -1) { // channel name appears in tweet - emit it on channel
-      try {
-        pusher.trigger(channel, "tweet", tweet.text, null, function(err, req, res) {
-          if(err) {
-            console.log("Could not emit tweet event on Pusher API.");
-          }
-          else {
-            console.log("Emitted tweet on " + channel + ": " + tweet.text)
-          }
-        });
-      } catch(e) {
-        console.log("Pusher connection error.", e)
-      }
+      // pusher.trigger(channel, "tweet", tweet.text, null, function(err, req, res) {
+      //   if(err) {
+      //     console.log("Could not emit tweet event on Pusher API.");
+      //   }
+      //   else {
+      //     console.log("Emitted tweet on " + channel + ": " + tweet.text)
+      //   }
+      // });
     }
   }
 };
 
 var setup = function(keywords) {
-  try {
-    var twit = new TwitterNode({
-      user: streamer.twitterUsername,
-      password: streamer.twitterPassword,
-      track: keywords
-    });
-    twit.addListener('error', function(error) {
-      console.log(error.message);
-    });
-    twit
-      .addListener('tweet', tweetEmitter)
-      .addListener('end', function(resp) {
-        sys.puts("wave goodbye... " + resp.statusCode);
-      })
-      .stream();
+  var twit = new TwitterNode({
+    user: streamer.twitterUsername,
+    password: streamer.twitterPassword,
+    track: keywords
+  });
+  twit.addListener('error', function(error) {
+    console.log(error.message);
+  });
+  twit
+    .addListener('tweet', tweetEmitter)
+    .addListener('end', function(resp) {
+      sys.puts("wave goodbye... " + resp.statusCode);
+    })
+    .stream();
 
-    return twit;
-  } catch(e) {
-    console.log("Twitter streaming connection error.")
-  }
+  return twit;
 };
