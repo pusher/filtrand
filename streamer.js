@@ -82,17 +82,17 @@ var tweetEmitter = function(tweet) {
     var channel = channels[i];
     if(tweet.text.indexOf(channel) != -1) { // channel name appears in tweet - emit it on channel
       try {
-        pusher.trigger(channel, "tweet", tweet.text, null, function(err, req, res) {
-          if(err) {
-            console.log("Could not emit tweet event on Pusher API.");
-          }
-          else {
-            console.log("Emitted tweet on " + channel + ": " + tweet.text)
-          }
-        });
-      } catch(e) {
-        console.log("Pusher connection error.", e)
-      }
+      //   pusher.trigger(channel, "tweet", tweet.text, null, function(err, req, res) {
+      //     if(err) {
+      //       console.log("Could not emit tweet event on Pusher API.");
+      //     }
+      //     else {
+      //       console.log("Emitted tweet on " + channel + ": " + tweet.text)
+      //     }
+      //   });
+      // } catch(e) {
+      //   console.log("Pusher connection error.", e)
+      // }
     }
   }
 };
