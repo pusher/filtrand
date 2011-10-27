@@ -1,4 +1,5 @@
 .DS_Store
-node_modules
-node_modules
-node_modules
+node_modules/express
+node_modules/jade
+node_modules/node-pusher
+node_modules/.bin
