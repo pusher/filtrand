@@ -37,11 +37,11 @@ streamer.untrack = function(keyword) {
 
 // setup the streamer with a Pusher connection
 streamer.appSetup = function(key, secret, appId) {
-    // pusher = new Pusher({
-    //   appId: appId,
-    //   key: key,
-    //   secret: secret
-    // });
+    pusher = new Pusher({
+      appId: appId,
+      key: key,
+      secret: secret
+    });
 
 };
 
@@ -78,14 +78,14 @@ var tweetEmitter = function(tweet) {
   for(var i in channels) {
     var channel = channels[i];
     if(tweet.text.indexOf(channel) != -1) { // channel name appears in tweet - emit it on channel
-      // pusher.trigger(channel, "tweet", tweet.text, null, function(err, req, res) {
-      //   if(err) {
-      //     console.log("Could not emit tweet event on Pusher API.");
-      //   }
-      //   else {
-      //     console.log("Emitted tweet on " + channel + ": " + tweet.text)
-      //   }
-      // });
+      pusher.trigger(channel, "tweet", tweet.text, null, function(err, req, res) {
+        if(err) {
+          console.log("Could not emit tweet event on Pusher API.");
+        }
+        else {
+          console.log("Emitted tweet on " + channel + ": " + tweet.text)
+        }
+      });
     }
   }
 };
@@ -96,6 +96,7 @@ var setup = function(keywords) {
     password: streamer.twitterPassword,
     track: keywords
   });
+  console.log("pooooort: " + twit.port);
   twit.addListener('error', function(error) {
     console.log(error.message);
   });
