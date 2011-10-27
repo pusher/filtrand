@@ -6,7 +6,7 @@ var Pusher = require('node-pusher');
 //Pusher.prototype.port = 8081;
 
 // staging
-// Pusher.prototype.domain = 'api.staging.pusherapp.com';
+//Pusher.prototype.domain = 'api.staging.pusherapp.com';
 
 
 
