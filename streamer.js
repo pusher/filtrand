@@ -20,9 +20,8 @@ streamer.track = function(keyword) {
   var keywords = currentKeywords();
   if(!includes(keyword, keywords))
     keywords.push(keyword);
-  console.log("1")
+
   streamer.twit = setup(keywords);
-  console.log("2")
 };
 
 // stop tracking passed keyword
@@ -73,8 +72,6 @@ var currentKeywords = function() {
 };
 
 var tweetEmitter = function(tweet) {
-  console.log("emit:")
-  console.log(tweet.text)
   var channels = currentKeywords();
   for(var i in channels) {
     var channel = channels[i];
@@ -97,19 +94,15 @@ var setup = function(keywords) {
     password: streamer.twitterPassword,
     track: keywords
   });
-  console.log("v")
   twit.addListener('error', function(error) {
-    console.log("twit error")
     console.log(error.message);
   });
-  console.log("w")
   twit
     .addListener('tweet', tweetEmitter)
     .addListener('end', function(resp) {
       sys.puts("wave goodbye... " + resp.statusCode);
     })
     .stream();
-  console.log("x")
 
   return twit;
 };
