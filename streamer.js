@@ -89,20 +89,24 @@ var tweetEmitter = function(tweet) {
 };
 
 var setup = function(keywords) {
-  var twit = new TwitterNode({
-    user: streamer.twitterUsername,
-    password: streamer.twitterPassword,
-    track: keywords
-  });
-  twit.addListener('error', function(error) {
-    console.log(error.message);
-  });
-  twit
-    .addListener('tweet', tweetEmitter)
-    .addListener('end', function(resp) {
-      sys.puts("wave goodbye... " + resp.statusCode);
-    })
-    .stream();
+  try {
+    var twit = new TwitterNode({
+      user: streamer.twitterUsername,
+      password: streamer.twitterPassword,
+      track: keywords
+    });
+    twit.addListener('error', function(error) {
+      console.log(error.message);
+    });
+    twit
+      .addListener('tweet', tweetEmitter)
+      .addListener('end', function(resp) {
+        sys.puts("wave goodbye... " + resp.statusCode);
+      })
+      .stream();
 
-  return twit;
+    return twit;
+  } catch(e) {
+    console.log("Twitter streaming connection error.")
+  }
 };
