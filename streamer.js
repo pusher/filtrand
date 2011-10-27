@@ -36,11 +36,16 @@ streamer.untrack = function(keyword) {
 
 // setup the streamer with a Pusher connection
 streamer.appSetup = function(key, secret, appId) {
-  pusher = new Pusher({
-    appId: appId,
-    key: key,
-    secret: secret
-  });
+  try {
+    pusher = new Pusher({
+      appId: appId,
+      key: key,
+      secret: secret
+    });
+  }
+  catch(e) {
+    console.log("Error establishing connection to Pusher.")
+  }
 };
 
 streamer.twitterSetup = function(username, password) {
