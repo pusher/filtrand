@@ -78,7 +78,7 @@ var tweetEmitter = function(tweet) {
   for(var i in channels) {
     var channel = channels[i];
     if(tweet.text.indexOf(channel) != -1) { // channel name appears in tweet - emit it on channel
-      pusher.trigger(channel, "tweet", tweet.text, null, function(err, req, res) {
+      pusher.trigger(channel, "tweet", tweet, null, function(err, req, res) {
         if(err) {
           console.log("Could not emit tweet event on Pusher API.");
         }
