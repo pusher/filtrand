@@ -119,9 +119,9 @@ $(document).ready(function() {
   // Finally, we kick things off by creating the **App**.
   window.App = new AppView;
 
-  channel.bind('tweet', function(tweetText) {
+  channel.bind('tweet', function(tweet) {
     var tweet = new Tweet();
-    tweet.text = tweetText;
+    tweet.text = tweet.text;
 
     if(window.Tweets.length == window.maxTweets)
       window.Tweets.last().destroy();
