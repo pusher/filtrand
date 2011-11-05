@@ -1,19 +1,32 @@
 var sys = require('sys');
 var url = require("url");
-var streamer = require("./streamer");
 var express = require("express");
+var tracker = require("./tracker");
+var distributor = require("./distributor");
+var twitterSource = require("./twitter-source")
 
-var appTitle = "Filtrand";
+distributor.setupPusher(process.env.PUSHER_KEY,
+                        process.env.PUSHER_SECRET,
+                        process.env.PUSHER_APP_ID);
+tracker.bind(function(keywords) {
+  distributor.updateKeywords(keywords);
+});
 
-// setup twitter streamer
-streamer.appSetup(process.env.PUSHER_KEY, process.env.PUSHER_SECRET, process.env.PUSHER_APP_ID);
-streamer.twitterSetup(process.env.TWITTER_USERNAME, process.env.TWITTER_PASSWORD);
+// setup twitter data source
+twitterSource.supplyCredentials(process.env.TWITTER_USERNAME, process.env.TWITTER_PASSWORD);
+twitterSource.setDistributor(distributor);
+tracker.bind(function(keywords) {
+  twitterSource.track(keywords);
+});
+
+
+
 
 // setup server
 var app = express.createServer();
+var appTitle = "Pusher Realtime Data";
 app.use(express.static(__dirname + '/public'));
 app.use(express.bodyParser());
-
 
 // routes
 
@@ -35,8 +48,7 @@ app.get("/", function (req, res) {
 
   if(subject !== undefined) {
     res.redirect("/" + subject)
-  }
-  else {
+  } else {
     res.render ('index.jade', {
       subject: "",
       layout: false,
@@ -54,12 +66,13 @@ app.post("/subject_interest_hook", function (req, res) {
   var event = body.data.event;
 
   console.log(channel, event)
+
   // we could authenticate the web hook here
 
   if(event == OCCUPIED_EVENT) {
-    streamer.track(channel);
+    tracker.track(channel);
   } else if(event == VACATED_EVENT) {
-    streamer.untrack(channel);
+    tracker.untrack(channel);
   }
 
   res.send("{}");

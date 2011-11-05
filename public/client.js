@@ -103,14 +103,14 @@ $(document).ready(function() {
   // main app setup
 
   // Enable pusher logging - don't include this in production
-  Pusher.log = function(message) {
-    //if (window.console && window.console.log) window.console.log(message);
-  };
+  // Pusher.log = function(message) {
+  //   if (window.console && window.console.log) window.console.log(message);
+  // };
 
   // Flash fallback logging - don't include this in production
   WEB_SOCKET_DEBUG = true;
 
-  var channel = pusher.subscribe(getSubject());
+  var channel = pusher.subscribe("twitter-" + getSubject());
 
   // global collection of tweets
   window.Tweets = new TweetList;
@@ -119,7 +119,7 @@ $(document).ready(function() {
   // Finally, we kick things off by creating the **App**.
   window.App = new AppView;
 
-  channel.bind('tweet', function(tweetJSON) {
+  channel.bind("update", function(tweetJSON) {
     var tweet = new Tweet();
     tweet.text = tweetJSON.text;
 

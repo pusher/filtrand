@@ -3,3 +3,4 @@ node_modules/.bin
 node_modules/express
 node_modules/jade
 node_modules/node-pusher
+node_modules/irc
