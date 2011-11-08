@@ -92,13 +92,6 @@ $(document).ready(function() {
     }
   });
 
-  function getSubject() {
-    var splitUrl = window.location.href.split("/");
-    return splitUrl[splitUrl.length - 1];
-  }
-
-
-
 
   // main app setup
 
@@ -107,25 +100,24 @@ $(document).ready(function() {
   //   if (window.console && window.console.log) window.console.log(message);
   // };
 
-  // Flash fallback logging - don't include this in production
-  WEB_SOCKET_DEBUG = true;
+  if(channelName && channelName.length > 0) {
+    var channel = pusher.subscribe(channelName);
 
-  var channel = pusher.subscribe("twitter-" + getSubject());
+    // global collection of tweets
+    window.Tweets = new TweetList;
+    window.maxTweets = 8;
 
-  // global collection of tweets
-  window.Tweets = new TweetList;
-  window.maxTweets = 8;
+    // Finally, we kick things off by creating the **App**.
+    window.App = new AppView;
 
-  // Finally, we kick things off by creating the **App**.
-  window.App = new AppView;
+    channel.bind("tweet", function(tweetJSON) {
+      var tweet = new Tweet();
+      tweet.text = tweetJSON.text;
 
-  channel.bind("update", function(tweetJSON) {
-    var tweet = new Tweet();
-    tweet.text = tweetJSON.text;
+      if(window.Tweets.length == window.maxTweets)
+        window.Tweets.last().destroy();
 
-    if(window.Tweets.length == window.maxTweets)
-      window.Tweets.last().destroy();
-
-    window.Tweets.add(tweet);
-  });
+      window.Tweets.add(tweet);
+    });
+  }
 });

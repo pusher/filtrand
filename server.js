@@ -1,60 +1,43 @@
 var sys = require('sys');
 var url = require("url");
 var express = require("express");
-var tracker = require("./tracker");
-var distributor = require("./distributor");
-var twitterSource = require("./twitter-source")
+var streamer = require("./streamer");
 
-distributor.setupPusher(process.env.PUSHER_KEY,
-                        process.env.PUSHER_SECRET,
-                        process.env.PUSHER_APP_ID);
-tracker.bind(function(keywords) {
-  distributor.updateKeywords(keywords);
-});
+var appTitle = "Filtrand";
 
-// setup twitter data source
-twitterSource.supplyCredentials(process.env.TWITTER_USERNAME, process.env.TWITTER_PASSWORD);
-twitterSource.setDistributor(distributor);
-tracker.bind(function(keywords) {
-  twitterSource.track(keywords);
-});
-
+// setup twitter streamer
+streamer.appSetup(process.env.PUSHER_KEY, process.env.PUSHER_SECRET, process.env.PUSHER_APP_ID);
+streamer.twitterSetup(process.env.TWITTER_USERNAME, process.env.TWITTER_PASSWORD);
 
 
 
 // setup server
 var app = express.createServer();
-var appTitle = "Pusher Realtime Data";
 app.use(express.static(__dirname + '/public'));
 app.use(express.bodyParser());
 
 // routes
 
-// display tweets for :subject
-app.get("/:subject", function (req, res) {
-  var subject = req.params["subject"];
-  res.render ('subject.jade', {
-    subject: subject,
+// main page
+app.get("/", function (req, res) {
+  var returnVars = {
     key: process.env.PUSHER_KEY,
     layout: false,
     appTitle: appTitle
-  });
-});
+  };
 
-// display subject entry form or redirect to subject page after submission
-app.get("/", function (req, res) {
-  var urlObj = url.parse(req.url, true);
-  var subject = urlObj.query["subject"];
-
-  if(subject !== undefined) {
-    res.redirect("/" + subject)
-  } else {
-    res.render ('index.jade', {
-      subject: "",
-      layout: false,
-      appTitle: appTitle
-    });
+  var subject = url.parse(req.url, true).query["subject"];
+  if(subject === undefined) {
+    returnVars["subject"] = "";
+    returnVars["channelName"] = "";
   }
+  else {
+    streamer.addSubject(subject);
+    returnVars["subject"] = subject;
+    returnVars["channelName"] = streamer.getChannel(subject);
+  }
+
+  res.render('index.jade', returnVars);
 });
 
 // receive a web hook indicating subject channel occupied or vacated
@@ -65,14 +48,13 @@ app.post("/subject_interest_hook", function (req, res) {
   var channel = body.data.channel;
   var event = body.data.event;
 
-  console.log(channel, event)
-
+  console.log(streamer.getSubject(channel), event)
   // we could authenticate the web hook here
 
   if(event == OCCUPIED_EVENT) {
-    tracker.track(channel);
+    streamer.track(channel);
   } else if(event == VACATED_EVENT) {
-    tracker.untrack(channel);
+    streamer.untrack(channel);
   }
 
   res.send("{}");
