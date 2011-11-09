@@ -21,7 +21,7 @@ var pusher = null;
 // start tracking passed subject
 streamer.track = function(channel) {
   var subject = streamer.getSubject(channel);
-  var subjects = currentSubjects();
+  var subjects = streamer.currentSubjects();
 
   if(!includes(subject, subjects))
     subjects.push(subject);
@@ -32,7 +32,7 @@ streamer.track = function(channel) {
 // stop tracking passed subject
 streamer.untrack = function(channel) {
   var subject = streamer.getSubject(channel);
-  var subjects = currentSubjects();
+  var subjects = streamer.currentSubjects();
 
   if(includes(subject, subjects)) {
     subjects.splice(subjects.indexOf(subject), 1);
@@ -42,7 +42,7 @@ streamer.untrack = function(channel) {
 };
 
 streamer.addSubject = function(subject) {
-  if(!subjectToChannel.hasOwnProperty(subject)) {
+  if(subject && !subjectToChannel.hasOwnProperty(subject)) {
     subjectToChannel[subject] = makeChannelName(subject);
   }
 };
@@ -73,6 +73,13 @@ streamer.twitterSetup = function(username, password) {
   streamer.twitterPassword = password;
 };
 
+streamer.currentSubjects = function() {
+  var subjects = [];
+  if(streamer.twit !== undefined)
+    subjects = streamer.twit.trackKeywords;
+
+  return subjects;
+};
 
 // supporting functions
 
@@ -92,16 +99,8 @@ var includes = function(item, array) {
   return included;
 };
 
-var currentSubjects = function() {
-  var subjects = [];
-  if(streamer.twit !== undefined)
-    subjects = streamer.twit.trackKeywords;
-
-  return subjects;
-};
-
 var tweetEmitter = function(tweet) {
-  var subjects = currentSubjects();
+  var subjects = streamer.currentSubjects();
   for(var i in subjects) {
     if(tweet.text.indexOf(subjects[i]) != -1) { // subject appears in tweet - emit it on channel
       emit(subjects[i], tweet);

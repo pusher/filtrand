@@ -23,11 +23,12 @@ app.get("/", function (req, res) {
   var returnVars = {
     key: process.env.PUSHER_KEY,
     layout: false,
-    appTitle: appTitle
+    appTitle: appTitle,
+    tracking: stream.currentSubjects()
   };
 
   var subject = url.parse(req.url, true).query["subject"];
-  if(subject === undefined) {
+  if(!subject) {
     returnVars["subject"] = "";
     returnVars["channelName"] = "";
   }

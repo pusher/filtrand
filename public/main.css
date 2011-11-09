@@ -5,8 +5,18 @@ p {font-family:'Lucida Sans Unicode', 'Lucida Grande'; font-size:12px; }
 
 
 label { display:block; }
+input { line-height:1.2em; font: 17px arial,sans-serif; margin-top: 20px; }
+form {  }
 
-li.tweet { list-style:none; padding:5px 5px 5px 1px; width:250px; }
 ul#tweet-list { padding: 0; }
+li.tweet { list-style:none; padding:5px 5px 5px 1px; width:250px; }
 
-.subject-form { padding:20px 5px 5px 1px; }
+.tracking-item { display:inline; }
+
+.instructions { padding-top: 20px; }
+
+.already-tracking { padding-top: 2px; padding-bottom:0; }
+
+.main-container { width: 600px; }
+.interface { float: left; width: 350px; }
+.information { float: right;  }
