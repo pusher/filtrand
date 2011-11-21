@@ -24,7 +24,7 @@ app.get("/", function (req, res) {
     key: process.env.PUSHER_KEY,
     layout: false,
     appTitle: appTitle,
-    tracking: stream.currentSubjects()
+    tracking: streamer.currentSubjects()
   };
 
   var subject = url.parse(req.url, true).query["subject"];
@@ -64,6 +64,6 @@ app.post("/subject_interest_hook", function (req, res) {
 
 // run server
 
-var port = 5000
-app.listen(process.env.PORT || port);
+var port = process.env.PORT || 5000;
+app.listen(port);
 console.log("Listening for WebHooks on port " + port + " at " + "/subject_interest_hook")
