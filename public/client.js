@@ -7,7 +7,39 @@ $(document).ready(function() {
   // staging
   //Pusher.host = "ws.staging.pusherapp.com"
 
-  // tweet model
+
+  // --------------- subject model
+
+  window.Subject = Backbone.Model.extend({
+    url: "/"
+  });
+
+  window.SubjectList = Backbone.Collection.extend({
+    model: Subject,
+    url: "/"
+  });
+
+  window.SubjectView = Backbone.View.extend({
+    tagName:  "li",
+    className: "subject",
+    template: _.template($('#subject-item-template').html()),
+
+    // listens for changes to its model, re-rendering.
+    initialize: function() {
+      this.model.bind('change', this.render, this);
+      this.model.bind('destroy', this.remove, this);
+    },
+
+    // re-render the contents of the tweet.
+    render: function() {
+      $(this.el).html(this.template(this.model.toJSON()));
+      return this;
+    },
+  });
+
+
+  //----------- tweet model
+
   window.Tweet = Backbone.Model.extend({
     url: "/",
 
@@ -34,10 +66,9 @@ $(document).ready(function() {
 
   // view for a tweet
   window.TweetView = Backbone.View.extend({
-
     tagName:  "li",
     className: "tweet",
-    template: _.template($('#item-template').html()),
+    template: _.template($('#tweet-item-template').html()),
 
     // listens for changes to its model, re-rendering.
     initialize: function() {
@@ -50,74 +81,124 @@ $(document).ready(function() {
       $(this.el).html(this.template(this.model.toJSON()));
       return this;
     },
-
-    // remove this view from the DOM.
-    remove: function() {
-      $(this.el).remove();
-    },
-
-    // remove the item, destroy the model.
-    clear: function() {
-      this.model.destroy();
-    }
   });
 
-  // appview - top level of UI
-  window.AppView = Backbone.View.extend({
+  // main view for list of tweets
+  window.TweetsView = Backbone.View.extend({
+    el: $("#tweets-view"),
 
-    // Instead of generating a new element, bind to the existing skeleton of
-    // the App already present in the HTML.
-    el: $("#filtrandapp"),
-
-    // At initialization we bind to the relevant events on the Tweets
-    // collection, when items are added or changed. Kick things off by
-    // loading any preexisting tweets that might be saved in *localStorage*.
     initialize: function() {
       Tweets.bind('add', this.addOne, this);
-      Tweets.bind('reset', this.addAll, this);
-
-      Tweets.fetch();
     },
 
-    // Add a single item to the list by creating a view for it, and
-    // appending its element to the `<ul>`.
     addOne: function(tweet) {
       var view = new TweetView({model: tweet});
       this.$("#tweet-list").prepend(view.render().el);
+      $(".waiting-for-tweets").hide();
+    },
+  });
+
+  // main view for list of subjects
+  window.SubjectsView = Backbone.View.extend({
+    el: $("#subjects-view"),
+
+    initialize: function() {
+      Subjects.bind('add', this.addOne, this);
+      Subjects.bind('remove', this.removeOne, this);
     },
 
-    // Add all items in the Tweets collection at once.
-    addAll: function() {
-      Tweets.each(this.addOne);
+    addOne: function(subject) {
+      var view = new SubjectView({model: subject});
+      this.$("#subject-list").prepend(view.render().el);
+      $(".already-tracking").show();
+      if(window.Tweets.length == 0) {
+        $(".waiting-for-tweets").show();
+      }
+    },
+
+    removeOne: function() {
+      if(window.Subjects.length == 0) {
+        $(".already-tracking").hide();
+        $(".waiting-for-tweets").hide();
+      }
     }
   });
 
 
-  // main app setup
+  //--------- helpers
 
-  // Enable pusher logging - don't include this in production
-  // Pusher.log = function(message) {
-  //   if (window.console && window.console.log) window.console.log(message);
-  // };
+  var getUrlParam = function(name) {
+    name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+    var results = regex.exec(window.location.href);
+    return results !== null ? results[1] : "";
+  };
 
-  if(channelName && channelName.length > 0) {
-    var channel = pusher.subscribe(channelName);
+  // avoids the chars disallowed in channel names
+  var encodeToChannelName = function(str) {
+    return encodeURIComponent(str).replace('-', '-0').replace('_', '-1').replace('.', '-2')
+      .replace('!', '-3').replace('~', '-4').replace('*', '-5').replace('(', '-6').replace(')', '-7');
+  };
 
-    // global collection of tweets
-    window.Tweets = new TweetList;
-    window.maxTweets = 8;
+  var addSubject = function(subjectString) {
+    if(subjectString !== null && subjectString !== undefined && subjectString.length > 0) {
+      var sub = new Subject();
+      sub.subject = subjectString;
+      window.Subjects.add(sub);
+      return sub;
+    }
+  };
 
-    // Finally, we kick things off by creating the **App**.
-    window.App = new AppView;
 
-    channel.bind("tweet", function(tweetJSON) {
-      var tweet = new Tweet();
-      tweet.text = tweetJSON.text;
+  // ------------- main app setup
 
-      if(window.Tweets.length == window.maxTweets)
-        window.Tweets.last().destroy();
+  var subjectChannel = pusher.subscribe("subjects");
+  window.Subjects = new SubjectList;
 
-      window.Tweets.add(tweet);
+  subjectChannel.bind("subject-subscribed", function(json) {
+    var alreadyShown = false;
+    window.Subjects.forEach(function(subject) {
+      if(subject.subject == json.subject) {
+        alreadyShown = true;
+      }
     });
+
+    if(alreadyShown === false) {
+      addSubject(json.subject);
+    }
+  });
+
+  subjectChannel.bind("subject-unsubscribed", function(json) {
+    window.Subjects.forEach(function(sub) {
+      if(json.subject == sub.subject) {
+        sub.destroy();
+      }
+    });
+  });
+
+  var subject = getUrlParam("subject");
+  var channelName = encodeToChannelName(subject);
+  var channel = pusher.subscribe(channelName);
+  window.Tweets = new TweetList;
+  window.maxTweets = 8;
+
+  channel.bind("tweet", function(tweetJSON) {
+    var tweet = new Tweet();
+    tweet.image = tweetJSON.user.profile_image_url;
+    tweet.text = tweetJSON.text;
+
+    if(window.Tweets.length == window.maxTweets)
+      window.Tweets.last().destroy();
+
+    window.Tweets.add(tweet);
+  });
+
+  // Finally, we kick things off by creating the lis views.
+  window.SubjectsView = new SubjectsView;
+  window.TweetsView = new TweetsView;
+
+  // add existing subjs (sent from server) to collection
+  for(var i = 0; i < currentSubjects.length; i++) {
+    addSubject(currentSubjects[i]);
   }
 });

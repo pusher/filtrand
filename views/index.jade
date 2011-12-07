@@ -8,8 +8,7 @@ html(lang="en")
 
     <script type="text/javascript">
     | var pusher = new Pusher("#{key}");
-    | var subject = "#{subject}"; // get subject into JS code
-    | var channelName = "#{channelName}";
+    | var currentSubjects = "#{currentSubjects}".split(",");
     </script>
 
     script(src="client.js")
@@ -20,32 +19,48 @@ html(lang="en")
 
   body
     .main-container
+
+      header
+
       .interface
         .title
-          h1= appTitle
+          a(href='/')= "Filtrand"
 
-        .instructions Enter a subject you think people are tweeting about
+        .instructions Enter a subject to track on Twitter
 
         form(class="subject-form", action="/")
           input(name="subject", value="#{subject}")
         br
-        - if (tracking.length)
-          .already-tracking
-          - tracking.forEach(function(item) {
-            - if (item != subject)
-              a(href='/?subject=' + item)= item
-          - })
 
-        #filtrandapp
-
+        #tweets-view
           .content
+            div(class="waiting-for-tweets", style='display:none;') Waiting for tweets...
+
             #tweets
               ul#tweet-list
 
-          <script type="text/template" id="item-template">
-          <div class="display"><div class="tweet-text">
-          <%= this.model.text %>
-          </div></div>
+          <script type="text/template" id="tweet-item-template">
+          <div class="display">
+          <div class="tweet-image"><img src="<%= this.model.image %>" width="48" height="48" /></div>
+          <div class="tweet-text"><%= this.model.text %></div>
+          </div>
           </script>
 
-      .information Filtrand is very interesting.
+      .information
+        .blurb Filtrand lets you track a phrase on Twitter.  It streams tweets that include that phrase.  It does this using <a href='http://pusher.com'>Pusher</a> and the latest Pusher feature, web hooks.  To find out more read <a href='http://blog.pusher.com/'>the blog post</a>.
+        .suggestions Try tracking <a href='/?subject=cool'>cool</a>, <a href='/?subject=woot'>woot</a>, <a href='/?subject=loser'>loser</a> or <a href='/?subject=the'>the</a>.
+
+        #subjects-view
+          div(class="already-tracking", style='display:none;') People are currently tracking
+
+          #subjects
+            ul#subject-list
+
+          <script type="text/template" id="subject-item-template">
+          <div class="subject-text"><a href='/?subject=<%= this.model.subject %>'><%= this.model.subject %></div>
+          </script>
+
+
+    .footer
+      <a href='http://pusher.com'>Pusher</a>&nbsp;&nbsp;&nbsp;
+      <a href='http://pusher.com/about#contact'>Contact Us</a>

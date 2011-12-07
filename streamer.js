@@ -23,8 +23,10 @@ streamer.track = function(channel) {
   var subject = streamer.channelToSubject(channel);
   var subjects = streamer.currentSubjects();
 
-  if(!includes(subject, subjects))
+  if(!includes(subject, subjects)) {
+    emitEvent("subjects", "subject-subscribed", { subject: subject });
     subjects.push(subject);
+  }
 
   streamer.twit = setup(subjects);
 };
@@ -35,6 +37,7 @@ streamer.untrack = function(channel) {
   var subjects = streamer.currentSubjects();
 
   if(includes(subject, subjects)) {
+    emitEvent("subjects", "subject-unsubscribed", { subject: subject });
     subjects.splice(subjects.indexOf(subject), 1);
   }
 
@@ -93,19 +96,23 @@ var tweetEmitter = function(tweet) {
   var subjects = streamer.currentSubjects();
   for(var i in subjects) {
     if(tweet.text.indexOf(subjects[i]) != -1) { // subject appears in tweet - emit it on channel
-      emit(subjects[i], tweet);
+      emitTweet(subjects[i], tweet);
     }
   }
 };
 
-var emit = function(subject, tweet) {
-  var channel = streamer.getChannel(subject);
-  pusher.trigger(channel, "tweet", tweet, null, function(err, req, res) {
+var emitTweet = function(subject, tweet) {
+  var channel = streamer.subjectToChannel(subject);
+  emitEvent(channel, "tweet", tweet);
+};
+
+var emitEvent = function(channel, event, data) {
+  pusher.trigger(channel, event, data, null, function(err, req, res) {
     if(err) {
-      console.log("Could not emit tweet event on Pusher API.");
+      console.log("Could not emit event on Pusher API.");
     }
     else {
-      console.log("Emitted tweet about " + subject + ": " + tweet.text)
+      //console.log("Emitted tweet about " + subject + ": " + tweet.text)
     }
   });
 };

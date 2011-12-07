@@ -24,7 +24,7 @@ app.get("/", function (req, res) {
     key: process.env.PUSHER_KEY,
     layout: false,
     appTitle: appTitle,
-    tracking: streamer.currentSubjects()
+    currentSubjects: streamer.currentSubjects()
   };
 
   // just for setting form field value
@@ -51,10 +51,12 @@ app.post("/subject_interest_hook", function (req, res) {
 
   // we could authenticate the web hook here
 
-  if(event == OCCUPIED_EVENT) {
-    streamer.track(channel);
-  } else if(event == VACATED_EVENT) {
-    streamer.untrack(channel);
+  if(channel != "subjects") {
+    if(event == OCCUPIED_EVENT) {
+      streamer.track(channel);
+    } else if(event == VACATED_EVENT) {
+      streamer.untrack(channel);
+    }
   }
 
   res.send("{}");
