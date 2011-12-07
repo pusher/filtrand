@@ -20,7 +20,7 @@ var pusher = null;
 
 // start tracking passed subject
 streamer.track = function(channel) {
-  var subject = streamer.getSubject(channel);
+  var subject = streamer.channelToSubject(channel);
   var subjects = streamer.currentSubjects();
 
   if(!includes(subject, subjects))
@@ -31,7 +31,7 @@ streamer.track = function(channel) {
 
 // stop tracking passed subject
 streamer.untrack = function(channel) {
-  var subject = streamer.getSubject(channel);
+  var subject = streamer.channelToSubject(channel);
   var subjects = streamer.currentSubjects();
 
   if(includes(subject, subjects)) {
@@ -39,24 +39,6 @@ streamer.untrack = function(channel) {
   }
 
   streamer.twit = setup(subjects);
-};
-
-streamer.addSubject = function(subject) {
-  if(subject && !subjectToChannel.hasOwnProperty(subject)) {
-    subjectToChannel[subject] = makeChannelName(subject);
-  }
-};
-
-streamer.getSubject = function(channel) {
-  for(var subject in subjectToChannel) {
-    if(subjectToChannel[subject] == channel) {
-      return subject;
-    }
-  }
-};
-
-streamer.getChannel = function(subject) {
-  return subjectToChannel[subject];
 };
 
 // setup the streamer with a Pusher connection
@@ -83,8 +65,16 @@ streamer.currentSubjects = function() {
 
 // supporting functions
 
-var makeChannelName = function(subject) {
-  return subject.replace(/[^A-Za-z0-9_\-=@,.;]/g, "") + Math.random();
+streamer.subjectToChannel = function(subject) {
+  return encodeURIComponent(subject).replace('-', '-0').replace('_', '-1')
+    .replace('.', '-2').replace('!', '-3').replace('~', '-4').replace('*', '-5')
+    .replace('(', '-6').replace(')', '-7')
+};
+
+streamer.channelToSubject = function(channel) {
+  return decodeURI(channel.replace('-7', ')').replace('-6', '(').replace('-5', '*')
+                   .replace('-4', '~').replace('-3', '!').replace('-2', '.')
+                   .replace('-1', '_').replace('-0', '-'));
 };
 
 var includes = function(item, array) {

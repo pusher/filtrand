@@ -27,15 +27,13 @@ app.get("/", function (req, res) {
     tracking: streamer.currentSubjects()
   };
 
+  // just for setting form field value
   var subject = url.parse(req.url, true).query["subject"];
   if(!subject) {
     returnVars["subject"] = "";
-    returnVars["channelName"] = "";
   }
   else {
-    streamer.addSubject(subject);
     returnVars["subject"] = subject;
-    returnVars["channelName"] = streamer.getChannel(subject);
   }
 
   res.render('index.jade', returnVars);
@@ -49,7 +47,8 @@ app.post("/subject_interest_hook", function (req, res) {
   var channel = body.data.channel;
   var event = body.data.event;
 
-  console.log(streamer.getSubject(channel), event)
+  console.log(streamer.channelToSubject(channel), event, channel)
+
   // we could authenticate the web hook here
 
   if(event == OCCUPIED_EVENT) {
