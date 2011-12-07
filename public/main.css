@@ -1,22 +1,51 @@
 div,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,table{ margin:0; padding:0; }
 input,form,h2 { display:inline; }
-body { font-family:'Lucida Sans Unicode', 'Lucida Grande'; font-size:12px; line-height:16px; color:#224; padding-top:5px; }
-p {font-family:'Lucida Sans Unicode', 'Lucida Grande'; font-size:12px; }
+body {
+  font-family:'Lucida Grande';
+  font-size:12px;
+  line-height:16px;
+  color:#224;
+  background: #eee url('/images/pusher-logo.png') -20% -200px no-repeat;
 
+  margin:0;
+}
+p { font-family:'Lucida Grande'; font-size:12px; }
+a, a:visited { color:#333; }
 
 label { display:block; }
-input { line-height:1.2em; font: 17px arial,sans-serif; margin-top: 20px; }
-form {  }
+input { line-height:1.2em; padding:5px; width:361px; font: 32.5px 'Lucida Grande'; margin-top: 20px; }
+form { padding:20px; }
 
 ul#tweet-list { padding: 0; }
-li.tweet { list-style:none; padding:5px 5px 5px 1px; width:250px; }
+li.tweet { list-style:none; padding:5px 5px 5px 1px; margin-bottom:10px; text-align:justify; }
+
+.tweet-text { float:left; width:300px; }
+.tweet-image { float: right; height:50px; }
+.display { height:50px; width:360px; }
+
+header { width:360px;  margin-bottom:10px; text-align:center; }
 
 .tracking-item { display:inline; }
 
-.instructions { padding-top: 20px; }
+.title { background-color:#333; padding:20px; font-size:20px; font-weight:bold;  }
+.title a { color:white; text-decoration:none; }
+.instructions { padding: 20px 20px 0 20px; font-size:14px;  }
 
-.already-tracking { padding-top: 2px; padding-bottom:0; }
+.content { padding:0 20px 20px 20px; }
+.waiting-for-tweets {  padding-top:20px; }
 
-.main-container { width: 600px; }
-.interface { float: left; width: 350px; }
-.information { float: right;  }
+.main-container { margin: 0 0 0 50px; width: 700px; height:740px; }
+.interface { float: left; height: 740px; width: 400px; background-color:white; }
+
+.information { float: right; width:290px; }
+.blurb { padding:20px; background-color:white; }
+.suggestions { margin-top:10px; padding:20px; background-color:white; }
+.already-tracking { margin-top:10px; padding:10px 20px 10px 20px; background-color:#333; color:white; }
+
+#subjects { margin-top:0;}
+ul#subject-list { padding: 0; margin:0; }
+li.subject { list-style:none; background-color:white; padding:10px 20px 10px 20px; }
+
+
+
+.footer { padding:20px; margin-left:50px; text-align:center; width:360px; }
