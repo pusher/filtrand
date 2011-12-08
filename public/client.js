@@ -97,7 +97,7 @@ $(document).ready(function() {
       this.$("#tweet-list").prepend(view.render().el);
       $(".waiting-for-tweets").hide();
     },
-    
+
     reset: function() {
       this.$("#tweet-list").empty();
      }
@@ -121,7 +121,6 @@ $(document).ready(function() {
     removeOne: function() {
       if(window.Subjects.length == 0) {
         $(".already-tracking").hide();
-        $(".waiting-for-tweets").hide();
       }
     }
   });
@@ -150,13 +149,13 @@ $(document).ready(function() {
       return sub;
     }
   };
-  
+
   var channelName = undefined;
   var subscribeNewSubject = function(subject) {
     if(channelName == encodeToChannelName(subject)) {
       return false;
     }
-    
+
     if(channelName !== undefined) {
       pusher.unsubscribe(channelName);
     }
@@ -167,7 +166,7 @@ $(document).ready(function() {
 
     window.Tweets.reset();
     $(".waiting-for-tweets").show();
-    
+
     channel.bind("tweet", function(tweetJSON) {
       var tweet = new Tweet();
       tweet.image = tweetJSON.user.profile_image_url;
@@ -177,7 +176,7 @@ $(document).ready(function() {
         window.Tweets.last().destroy();
       }
 
-      window.Tweets.add(tweet);    
+      window.Tweets.add(tweet);
     });
   }
 
@@ -216,12 +215,12 @@ $(document).ready(function() {
     subscribeNewSubject(subject);
     return false;
   })
-  
+
   $('.sidebar-subject').live("click", function(){
     subscribeNewSubject($(this).text());
     return false;
   });
-  
+
 
   // Finally, we kick things off by creating the lis views.
   window.SubjectsView = new SubjectsView;
