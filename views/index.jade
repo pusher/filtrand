@@ -47,8 +47,10 @@ html(lang="en")
           </script>
 
       .information
-        .blurb Filtrand lets you track a phrase on Twitter.  It streams tweets that include that phrase.  It does this using <a href='http://pusher.com'>Pusher</a> and the latest Pusher feature, web hooks.  To find out more read <a href='http://blog.pusher.com/2011/12/7/web-hooks'>the blog post</a>.
-        .suggestions Try tracking <a class="sidebar-subject" href="#">cool</a>, <a class="sidebar-subject" href="#">woot</a>, <a class="sidebar-subject" href="#">loser</a> or <a class="sidebar-subject" href="#">the</a>.
+        .blurb
+          p Searching for a term subscribes you to a Pusher channel. Pusher sends web hooks to a Node.js process as channels become occupied or unoccupied.  This process maintains the active list of terms, subscribes to the Twitter firehose, and sends every tweet received to the Pusher REST API.
+          p To find out more, read <a href='http://blog.pusher.com/2011/12/7/web-hooks'>the blog post</a>.
+        .suggestions Try tracking <a class="sidebar-subject" href="#">exciting</a>, <a class="sidebar-subject" href="#">php</a>, <a class="sidebar-subject" href="#">party</a>.
 
         #subjects-view
           div(class="already-tracking", style='display:none;') People are currently tracking

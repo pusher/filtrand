@@ -9,7 +9,7 @@ body {
 
   margin:0;
 }
-p { font-family:'Lucida Grande'; font-size:12px; }
+p { font-family:'Lucida Grande'; font-size:12px; margin-top:10px; line-height:16px; }
 a, a:visited { color:#333; }
 
 label { display:block; }
@@ -45,7 +45,5 @@ header { width:360px;  margin-bottom:10px; text-align:center; }
 #subjects { margin-top:0;}
 ul#subject-list { padding: 0; margin:0; }
 li.subject { list-style:none; background-color:white; padding:10px 20px 10px 20px; }
-
-
 
 .footer { padding:10px; margin-left:50px; text-align:center; width:360px; }
