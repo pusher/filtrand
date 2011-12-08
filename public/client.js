@@ -100,7 +100,6 @@ $(document).ready(function() {
     
     reset: function() {
       this.$("#tweet-list").empty();
-        $(".waiting-for-tweets").show();
      }
   });
 
@@ -165,7 +164,9 @@ $(document).ready(function() {
     channelName = encodeToChannelName(subject);
     channel = pusher.subscribe(channelName);
     $("input[name=subject]").val(subject);
+
     window.Tweets.reset();
+    $(".waiting-for-tweets").show();
     
     channel.bind("tweet", function(tweetJSON) {
       var tweet = new Tweet();
