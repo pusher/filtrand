@@ -148,6 +148,30 @@ $(document).ready(function() {
       return sub;
     }
   };
+  
+  var channelName = undefined;
+  var subscribeNewSubject = function(subject) {
+    if(channelName !== undefined) {
+      pusher.unsubscribe(channelName);
+    }
+
+    channelName = encodeToChannelName(subject);
+    channel = pusher.subscribe(channelName);
+    $("input[name=subject]").val(subject);
+    window.Tweets.reset();
+    
+    channel.bind("tweet", function(tweetJSON) {
+      var tweet = new Tweet();
+      tweet.image = tweetJSON.user.profile_image_url;
+      tweet.text = tweetJSON.text;
+
+      if(window.Tweets.length == window.maxTweets) {
+        window.Tweets.last().destroy();
+      }
+
+      window.Tweets.add(tweet);    
+    });
+  }
 
 
   // ------------- main app setup
@@ -176,22 +200,20 @@ $(document).ready(function() {
     });
   });
 
-  var subject = getUrlParam("subject");
-  var channelName = encodeToChannelName(subject);
-  var channel = pusher.subscribe(channelName);
   window.Tweets = new TweetList;
   window.maxTweets = 8;
 
-  channel.bind("tweet", function(tweetJSON) {
-    var tweet = new Tweet();
-    tweet.image = tweetJSON.user.profile_image_url;
-    tweet.text = tweetJSON.text;
-
-    if(window.Tweets.length == window.maxTweets)
-      window.Tweets.last().destroy();
-
-    window.Tweets.add(tweet);
+  $('.subject-form').submit(function(){
+    var subject = $("input[name=subject]").val();
+    subscribeNewSubject(subject);
+    return false;
+  })
+  
+  $('.sidebar-subject').live("click", function(){
+    subscribeNewSubject($(this).text());
+    return false;
   });
+  
 
   // Finally, we kick things off by creating the lis views.
   window.SubjectsView = new SubjectsView;

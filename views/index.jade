@@ -48,7 +48,7 @@ html(lang="en")
 
       .information
         .blurb Filtrand lets you track a phrase on Twitter.  It streams tweets that include that phrase.  It does this using <a href='http://pusher.com'>Pusher</a> and the latest Pusher feature, web hooks.  To find out more read <a href='http://blog.pusher.com/2011/12/7/web-hooks'>the blog post</a>.
-        .suggestions Try tracking <a href='/?subject=cool'>cool</a>, <a href='/?subject=woot'>woot</a>, <a href='/?subject=loser'>loser</a> or <a href='/?subject=the'>the</a>.
+        .suggestions Try tracking <a class="sidebar-subject" href="#">cool</a>, <a class="sidebar-subject" href="#">woot</a>, <a class="sidebar-subject" href="#">loser</a> or <a class="sidebar-subject" href="#">the</a>.
 
         #subjects-view
           div(class="already-tracking", style='display:none;') People are currently tracking
@@ -57,7 +57,7 @@ html(lang="en")
             ul#subject-list
 
           <script type="text/template" id="subject-item-template">
-          <div class="subject-text"><a href='/?subject=<%= this.model.subject %>'><%= this.model.subject %></div>
+          <div class="subject-text"><a class="sidebar-subject" href="#"><%= this.model.subject %></div>
           </script>
 
 
