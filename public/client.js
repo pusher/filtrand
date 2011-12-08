@@ -89,6 +89,7 @@ $(document).ready(function() {
 
     initialize: function() {
       Tweets.bind('add', this.addOne, this);
+      Tweets.bind('reset', this.reset, this);
     },
 
     addOne: function(tweet) {
@@ -96,6 +97,11 @@ $(document).ready(function() {
       this.$("#tweet-list").prepend(view.render().el);
       $(".waiting-for-tweets").hide();
     },
+    
+    reset: function() {
+      this.$("#tweet-list").empty();
+        $(".waiting-for-tweets").show();
+     }
   });
 
   // main view for list of subjects
