@@ -117,9 +117,6 @@ $(document).ready(function() {
       var view = new SubjectView({model: subject});
       this.$("#subject-list").prepend(view.render().el);
       $(".already-tracking").show();
-      if(window.Tweets.length == 0) {
-        $(".waiting-for-tweets").show();
-      }
     },
 
     removeOne: function() {
