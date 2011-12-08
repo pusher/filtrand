@@ -27,15 +27,6 @@ app.get("/", function (req, res) {
     currentSubjects: streamer.currentSubjects()
   };
 
-  // just for setting form field value
-  var subject = url.parse(req.url, true).query["subject"];
-  if(!subject) {
-    returnVars["subject"] = "";
-  }
-  else {
-    returnVars["subject"] = subject;
-  }
-
   res.render('index.jade', returnVars);
 });
 
