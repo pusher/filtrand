@@ -151,6 +151,10 @@ $(document).ready(function() {
   
   var channelName = undefined;
   var subscribeNewSubject = function(subject) {
+    if(channelName == encodeToChannelName(subject)) {
+      return false;
+    }
+    
     if(channelName !== undefined) {
       pusher.unsubscribe(channelName);
     }
