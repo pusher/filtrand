@@ -109,7 +109,7 @@ var emitTweet = function(subject, tweet) {
 var emitEvent = function(channel, event, data) {
   pusher.trigger(channel, event, data, null, function(err, req, res) {
     if(err) {
-      console.log("Could not emit event on Pusher API.");
+      console.log("Could not emit event on Pusher API.", err);
     }
     else {
       //console.log("Emitted tweet about " + subject + ": " + tweet.text)
