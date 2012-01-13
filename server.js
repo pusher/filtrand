@@ -31,24 +31,25 @@ app.get("/", function (req, res) {
 });
 
 // receive a web hook indicating subject channel occupied or vacated
-var OCCUPIED_EVENT = "channel_occupied";
-var VACATED_EVENT = "channel_vacated";
 app.post("/subject_interest_hook", function (req, res) {
-  var body = req.body;
-  var channel = body.data.channel;
-  var event = body.data.event;
+  var events = req.body.events;
 
-  console.log(streamer.channelToSubject(channel), event, channel)
+  console.log("WebHook received", body);
 
   // we could authenticate the web hook here
 
-  if(channel != "subjects") {
-    if(event == OCCUPIED_EVENT) {
-      streamer.track(channel);
-    } else if(event == VACATED_EVENT) {
-      streamer.untrack(channel);
+  for (var i=0; i < events.length; i++) {
+    var event = events[i].event;
+    var channel = events[i].channel;
+
+    if (channel != "subjects") {
+      if (event == "channel_occupied") {
+        streamer.track(channel);
+      } else if (event == "channel_vacated") {
+        streamer.untrack(channel);
+      }
     }
-  }
+  };
 
   res.send("{}");
 });
