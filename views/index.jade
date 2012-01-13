@@ -4,9 +4,12 @@ html(lang="en")
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js")
     script(src="underscore-min.js")
     script(src="backbone-min.js")
-    script(src="http://js.pusherapp.com/1.9/pusher.min.js")
+    script(src="http://js.pusher.com/1.11/pusher.min.js")
 
     <script type="text/javascript">
+    | Pusher.log = function(message) {
+    |   if (window.console && window.console.log) window.console.log(message);
+    | };
     | var pusher = new Pusher("#{key}");
     | var currentSubjects = "#{currentSubjects}".split(",");
     </script>
