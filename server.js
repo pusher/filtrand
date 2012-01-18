@@ -1,7 +1,10 @@
 var sys = require('sys');
 var url = require("url");
 var crypto = require("crypto");
+
 var express = require("express");
+
+var auth = require("./web_hooks_auth");
 var streamer = require("./streamer");
 
 var appTitle = "Filtrand";
@@ -12,19 +15,10 @@ streamer.twitterSetup(process.env.TWITTER_USERNAME, process.env.TWITTER_PASSWORD
 
 // setup server
 var app = express.createServer();
+// static content middleware
 app.use(express.static(__dirname + '/public'));
-
-// storing raw body in request
-app.use(function (req, res, next) {
-  req.on('data', function (data) {
-    if (req.rawBody === undefined) {
-      req.rawBody = '';
-    }
-    req.rawBody += data;
-  });
-  next();
-});
-
+// web hooks auth middleware, keep before body parser
+app.use(auth.getAuthMiddleware(process.env.PUSHER_KEY, process.env.PUSHER_SECRET));
 // body parser
 app.use(express.bodyParser());
 
@@ -44,14 +38,7 @@ app.get("/", function (req, res) {
 
 // receive a web hook indicating subject channel occupied or vacated
 app.post("/subject_interest_hook", function (req, res) {
-  var events = req.body.events;
-
-  var digest = crypto.createHmac('sha256', process.env.PUSHER_SECRET)
-    .update(req.rawBody)
-    .digest('hex');
-
-  if (req.headers['x-pusher-appkey'] !== process.env.PUSHER_KEY ||
-      req.headers['x-pusher-hmac-sha256'] !== digest) {
+  if (!req.web_hook_authorized) {
     console.log("WebHook denied", req.body);
     res.send({}, 403);
     return;
@@ -59,6 +46,7 @@ app.post("/subject_interest_hook", function (req, res) {
 
   console.log("WebHook received", req.body);
 
+  var events = req.body.events;
   for (var i=0; i < events.length; i++) {
     var event = events[i].name;
     var channel = events[i].channel;
