@@ -169,7 +169,7 @@ $(document).ready(function() {
 
     channel.bind("tweet", function(tweetJSON) {
       var tweet = new Tweet();
-      tweet.image = tweetJSON.user.profile_image_url;
+      tweet.image = tweetJSON.profile_image_url;
       tweet.text = tweetJSON.text;
 
       if(window.Tweets.length == window.maxTweets) {

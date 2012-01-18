@@ -103,7 +103,11 @@ var tweetEmitter = function(tweet) {
 
 var emitTweet = function(subject, tweet) {
   var channel = streamer.subjectToChannel(subject);
-  emitEvent(channel, "tweet", tweet);
+  emitEvent(
+    channel,
+    "tweet",
+    { profile_image_url: tweet.user.profile_image_url, text: tweet.text }
+  );
 };
 
 var emitEvent = function(channel, event, data) {
