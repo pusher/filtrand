@@ -1,5 +1,6 @@
 var sys = require('sys');
 var url = require("url");
+var crypto = require("crypto");
 var express = require("express");
 var streamer = require("./streamer");
 
@@ -9,11 +10,22 @@ var appTitle = "Filtrand";
 streamer.appSetup(process.env.PUSHER_KEY, process.env.PUSHER_SECRET, process.env.PUSHER_APP_ID);
 streamer.twitterSetup(process.env.TWITTER_USERNAME, process.env.TWITTER_PASSWORD);
 
-
-
 // setup server
 var app = express.createServer();
 app.use(express.static(__dirname + '/public'));
+
+// storing raw body in request
+app.use(function (req, res, next) {
+  req.on('data', function (data) {
+    if (req.rawBody === undefined) {
+      req.rawBody = '';
+    }
+    req.rawBody += data;
+  });
+  next();
+});
+
+// body parser
 app.use(express.bodyParser());
 
 // routes
@@ -34,9 +46,18 @@ app.get("/", function (req, res) {
 app.post("/subject_interest_hook", function (req, res) {
   var events = req.body.events;
 
-  console.log("WebHook received", req.body);
+  var digest = crypto.createHmac('sha256', process.env.PUSHER_SECRET)
+    .update(req.rawBody)
+    .digest('hex');
 
-  // we could authenticate the web hook here
+  if (req.headers['x-pusher-appkey'] !== process.env.PUSHER_KEY ||
+      req.headers['x-pusher-hmac-sha256'] !== digest) {
+    console.log("WebHook denied", req.body);
+    res.send({}, 403);
+    return;
+  }
+
+  console.log("WebHook received", req.body);
 
   for (var i=0; i < events.length; i++) {
     var event = events[i].name;
@@ -51,7 +72,7 @@ app.post("/subject_interest_hook", function (req, res) {
     }
   };
 
-  res.send("{}");
+  res.send({});
 });
 
 
