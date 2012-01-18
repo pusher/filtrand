@@ -34,12 +34,12 @@ app.get("/", function (req, res) {
 app.post("/subject_interest_hook", function (req, res) {
   var events = req.body.events;
 
-  console.log("WebHook received", body);
+  console.log("WebHook received", req.body);
 
   // we could authenticate the web hook here
 
   for (var i=0; i < events.length; i++) {
-    var event = events[i].event;
+    var event = events[i].name;
     var channel = events[i].channel;
 
     if (channel != "subjects") {
