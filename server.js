@@ -37,7 +37,7 @@ app.get("/", function (req, res) {
 });
 
 // receive a web hook indicating subject channel occupied or vacated
-app.post("/subject_interest_hook", function (req, res) {
+app.post("/webhooks", function (req, res) {
   if (!req.web_hook_authorized) {
     console.log("WebHook denied", req.body);
     res.send({}, 403);
@@ -68,4 +68,4 @@ app.post("/subject_interest_hook", function (req, res) {
 
 var port = process.env.PORT || 5000;
 app.listen(port);
-console.log("Listening for WebHooks on port " + port + " at " + "/subject_interest_hook")
+console.log("Listening for WebHooks on port " + port + " at " + "/webhooks")

@@ -19,7 +19,7 @@ Run
 
     node server.js
 
-Configure Web Hooks on Pusher
+Configure Web Hooks on Pusher to point to <http://your-machine/webhooks>. You might find a service like [localtunnel](http://progrium.com/localtunnel/) useful.
 
 Visit <http://localhost:5000/>
 
