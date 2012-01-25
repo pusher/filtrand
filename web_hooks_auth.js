@@ -4,8 +4,8 @@ exports.getAuthMiddleware = function (app_key, secret) {
   return function (req, res, next) {
     req.web_hook_authorized = false;
 
-    var app_key_header = req.headers['x-pusher-appkey'];
-    var app_digest_header = req.headers['x-pusher-hmac-sha256'];
+    var app_key_header = req.headers['x-pusher-key'];
+    var app_digest_header = req.headers['x-pusher-signature'];
     if (app_key_header !== undefined) {
       var body = '';
       // handle reading the body
